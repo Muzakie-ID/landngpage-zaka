@@ -349,6 +349,13 @@
 
     // ===== LIGHTBOX GALLERY =====
     const defaultGalleryImages = [
+        'images/6080217220941287695.jpg',
+        'images/6080217220941287697.jpg',
+        'images/6080217220941287698.jpg',
+        'images/6080217220941287700.jpg',
+        'images/6080217220941287701.jpg',
+        'images/6080217220941287726.jpg',
+        'images/6080217220941287727.jpg',
         'images/testimoni-1.jpg',
         'images/testimoni-2.jpg',
         'images/testimoni-3.jpg'
