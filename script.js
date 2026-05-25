@@ -348,24 +348,36 @@
     });
 
     // ===== LIGHTBOX GALLERY =====
-    let galleryImages = [];
+    const defaultGalleryImages = [
+        'images/testimoni-1.jpg',
+        'images/testimoni-2.jpg',
+        'images/testimoni-3.jpg'
+    ];
+    let galleryImages = [...defaultGalleryImages];
     let currentImageIndex = 0;
 
-    // Mengambil daftar gambar secara otomatis dari folder images menggunakan PHP
-    fetch('get_images.php')
-        .then(response => response.json())
+    // Di Vercel, PHP tidak dijalankan. Default ke file statis, lalu
+    // coba ambil daftar dinamis hanya jika endpoint PHP benar-benar mengembalikan JSON.
+    fetch('get_images.php', { cache: 'no-store' })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Endpoint PHP tidak tersedia');
+            }
+
+            const contentType = response.headers.get('content-type') || '';
+
+            if (!contentType.includes('application/json')) {
+                throw new Error('Endpoint bukan JSON');
+            }
+
+            return response.json();
+        })
         .then(data => {
-            if (data && data.length > 0) {
+            if (Array.isArray(data) && data.length > 0) {
                 galleryImages = data;
-            } else {
-                // Jika folder kosong
-                galleryImages = ['https://via.placeholder.com/400x800.png?text=Belum+ada+foto+di+folder+images'];
             }
         })
-        .catch(err => {
-            console.error('Gagal mengambil gambar: ', err);
-            galleryImages = ['https://via.placeholder.com/400x800.png?text=Harus+dijalankan+di+server+(Laragon)'];
-        });
+        .catch(() => {});
 
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightbox-img');
@@ -408,7 +420,11 @@
 
     // Tampilkan gambar berdasarkan index
     function showImage(index) {
-        lightboxImg.src = galleryImages[index];
+        if (!galleryImages.length) {
+            galleryImages = [...defaultGalleryImages];
+        }
+
+        lightboxImg.src = galleryImages[index] || defaultGalleryImages[0];
     }
 
     // Klik di luar gambar untuk menutup modal
