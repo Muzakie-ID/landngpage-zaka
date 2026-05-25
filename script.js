@@ -425,6 +425,30 @@
         });
     }
 
+    // Keyboard navigation: left/right arrows to navigate, Esc to close (when lightbox is open)
+    document.addEventListener('keydown', (e) => {
+        try {
+            if (!lightbox) return;
+            if (lightbox.style.display !== 'flex') return;
+
+            if (e.key === 'ArrowLeft') {
+                if (prevBtn) {
+                    e.preventDefault();
+                    prevBtn.click();
+                }
+            } else if (e.key === 'ArrowRight') {
+                if (nextBtn) {
+                    e.preventDefault();
+                    nextBtn.click();
+                }
+            } else if (e.key === 'Escape') {
+                lightbox.style.display = 'none';
+            }
+        } catch (err) {
+            // ignore
+        }
+    });
+
     // Tampilkan gambar berdasarkan index
     function showImage(index) {
         if (!galleryImages.length) {
